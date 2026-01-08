@@ -16,7 +16,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
-  sources?: Array<{ document: string; excerpt: string; url?: string }>;
+  sources?: Array<{ document: string; excerpt: string; url?: string; type?: string }>;
 }
 
 interface ChatInterfaceProps {
@@ -93,10 +93,11 @@ const ChatInterface = ({ messages, setMessages }: ChatInterfaceProps) => {
         role: "assistant",
         content: data.answer || data.message || "I couldn't find relevant information for your query.",
         timestamp: new Date(),
-        sources: data.sources?.map((source: { name: string; excerpt: string; type: string; url?: string }) => ({
+        sources: data.sources?.map((source: { name: string; excerpt: string; type: string; url?: string; id?: number }) => ({
           document: source.name || source.type,
           excerpt: source.excerpt || "",
           url: source.url || "",
+          type: source.type || "document",
         })) || [],
       };
       setMessages((prev) => [...prev, botMessage]);

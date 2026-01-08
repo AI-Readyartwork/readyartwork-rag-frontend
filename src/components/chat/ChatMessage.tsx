@@ -11,7 +11,7 @@ interface ChatMessageProps {
     role: "user" | "assistant";
     content: string;
     timestamp: Date;
-    sources?: Array<{ document: string; excerpt: string; url?: string }>;
+    sources?: Array<{ document: string; excerpt: string; url?: string; type?: string }>;
   };
 }
 
@@ -167,30 +167,38 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
             </Button>
 
             {sourcesExpanded && (
-              <div className="mt-2 space-y-1.5 bg-muted/50 rounded-lg p-3 border border-border">
-                {message.sources.slice(0, 4).map((source, idx) => (
-                  <div
-                    key={idx}
-                    className="text-xs"
-                  >
-                    {source.url ? (
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-start gap-1.5"
-                      >
-                        <span className="text-muted-foreground">{idx + 1}.</span>
-                        <span className="flex-1">{source.document}</span>
-                      </a>
-                    ) : (
-                      <div className="flex items-start gap-1.5 text-muted-foreground">
-                        <span>{idx + 1}.</span>
-                        <span className="flex-1">{source.document}</span>
+              <div className="mt-2 space-y-4 bg-muted/50 rounded-lg p-4 border border-border">
+                {message.sources.map((source, idx) => {
+                  const isMeeting = source.type === "meeting";
+                  
+                  return (
+                    <div key={idx} className="text-sm">
+                      {/* Source title - clickable if URL exists */}
+                      <div className="flex items-start gap-2">
+                        <span className="text-muted-foreground font-medium">{idx + 1}.</span>
+                        {source.url ? (
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline font-medium"
+                          >
+                            {source.document}
+                          </a>
+                        ) : (
+                          <span className="font-medium text-foreground">{source.document}</span>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                      
+                      {/* Excerpt */}
+                      {source.excerpt && (
+                        <p className="mt-1 ml-5 text-muted-foreground text-xs leading-relaxed">
+                          {source.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

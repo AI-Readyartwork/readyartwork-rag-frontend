@@ -11,7 +11,7 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
-  sources?: Array<{ document: string; excerpt: string; url?: string }>;
+  sources?: Array<{ document: string; excerpt: string; url?: string; type?: string }>;
 }
 
 const pageTitles: Record<ViewType, string> = {
