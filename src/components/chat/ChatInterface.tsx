@@ -29,6 +29,7 @@ const BOT_NAME = "Archie";
 const ChatInterface = ({ messages, setMessages }: ChatInterfaceProps) => {
   const [isTyping, setIsTyping] = useState(false);
   const [greetingText, setGreetingText] = useState("What's on your mind today?");
+  const [conversationId] = useState(() => `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Generate dynamic greeting on mount
@@ -64,13 +65,7 @@ const ChatInterface = ({ messages, setMessages }: ChatInterfaceProps) => {
     setIsTyping(true);
 
     try {
-      // Prepare conversation history (last 15 messages, excluding current one)
-      const history = messages.slice(-15).map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      }));
-
-      // Call the backend RAG API with history
+      // Call the backend RAG API with conversation_id
       const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/api/chat`, {
         method: "POST",
         headers: {
@@ -78,7 +73,7 @@ const ChatInterface = ({ messages, setMessages }: ChatInterfaceProps) => {
         },
         body: JSON.stringify({
           query: content,
-          history: history,
+          conversation_id: conversationId,
         }),
       });
 
